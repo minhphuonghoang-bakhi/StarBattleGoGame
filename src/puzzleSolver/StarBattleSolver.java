@@ -15,14 +15,12 @@ public class StarBattleSolver {
     private char[][] grid;
     private char[][] regions;
 
-
     public StarBattleSolver(StarBattleBoard board) {      //Constructor
         this.board = board;
         this.size = board.getSize();  //size is private in class Board, when class Solver wants to retrieve: using getter method
         this.grid = board.getBoard();
         this.regions = board.getRegions();
         this.starsPerRow = board.getStarsPerRow();
-
     }
 
     //action(print,...) void
@@ -239,7 +237,6 @@ public class StarBattleSolver {
             System.out.println();
         }
     }
-
 
     public static void main (String[] args) throws IOException {
         StarBattleBoard board = StarBattleBoard.fromFile("puzzle/puzzle.txt");
