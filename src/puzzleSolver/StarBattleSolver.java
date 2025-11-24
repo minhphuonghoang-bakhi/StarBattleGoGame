@@ -18,7 +18,7 @@ public class StarBattleSolver {
 
     public StarBattleSolver(StarBattleBoard board) {      //Constructor
         this.board = board;
-        this.size = board.getSize();  //size is private in class Board, when class Solver wants to read: using getter method
+        this.size = board.getSize();  //size is private in class Board, when class Solver wants to retrieve: using getter method
         this.grid = board.getBoard();
         this.regions = board.getRegions();
         this.starsPerRow = board.getStarsPerRow();
@@ -58,13 +58,7 @@ public class StarBattleSolver {
         return map;
     }
 
-    //before i have used wrapper method in previous class so that i dont need to define again isValidMove() in this class
-    //but the isValidMove in previous class is a version allowing user to enter them solution
-    //so after placing a star and check all cases, if not valid it must be an instruction printed out
-    //such as "Invalid Move - already has a star" so that they know where theyre wrong
-    //but in this "version" we let the computer solves itself, printing out this thing is kinda a mess for me so
-    //I declare the method again without printing the reason for each step failing to place star
-    //check if places star is valid
+    //cannot use getter setter from previous class because need to change the internal code
     private boolean isValidMove(int row, int col) {
 
         int size = board.getSize();
@@ -138,25 +132,10 @@ public class StarBattleSolver {
         // A = regionSizes[0] = 4 > 0 -> add
         // regionOrder = [A, B, C, D, E]
         regionOrder.sort(Comparator.comparingInt(r -> regionSizes[r - 'A']));
-        //lambda function r -> regionSizes[r - 'A'] convert each region letter into its size(number)
-        //so that method Comparator.comparingInt can compare and sort the regionOrder list
+        //lambda function r -> regionSizes[r - 'A'] so do not need Comparator Interface
         //r= 'A' -> regionSizes[A-A=0] = 4
         //r= 'B' -> regionSizes[B-A=1] = 7
 
-        /** class RegionComparator implements Comparator<Character> {  //using interface
-         private int[] regionSizes;
-
-         public RegionComparator(int[] regionSizes) {
-         this.regionSizes = regionSizes;
-         }
-
-         public int compare(Character r1, Character r2) {
-         return regionSizes[r1 - 'A'] - regionSizes[r2 - 'A'];
-         }
-         }
-
-         regionOrder.sort(new RegionComparator(regionSizes));
-         **/
 
         return solveRegion(regionOrder, regionCells, 0);
     }
@@ -167,7 +146,7 @@ public class StarBattleSolver {
         if (idx == regionOrder.size()) return true; // solved all regions
 
         //get the current region and list of its cells.
-        //call placeStarsInRegion to try placing starsPerRow = 1 stars in this region.
+        //call placeStarsInRegion to try placing starsPerRow = 2 stars in this region.
 
         char region = regionOrder.get(idx); //region = get(0) = A
         ArrayList<int[]> cells = regionCells.get(region); //cells= get('A') = A → [(0,0), (0,1), (1,0), (1,1)]
@@ -193,13 +172,10 @@ public class StarBattleSolver {
             int r = cells.get(i)[0]; // 0
             int c = cells.get(i)[1];  // 1
             if (isValidMove(r, c)) {
-                //cannot call a private method of another class directly
-                //cannot call a method of another class without a reference to the object of this class
-
                 placeStar(r, c);
                 //recursively call to check all the points in that region
                 //(call with i + 2, inside i + 2 call i + 3; inside i+3, call i+4)
-                //i++ automatically, if cannot place the star at i + 1, i + 2, i + 3, i + 4, remove star at i
+                //if cannot place the 2nd star at i + 1, i + 2, i + 3, i + 4, remove star at i
                 if (placeStarsInRegion(cells, i + 1, starPlaced + 1, regionOrder, regionCells, regionsidx)) {
                     return true;
                 }
@@ -237,8 +213,7 @@ public class StarBattleSolver {
     };
 
     private static final String ansiReset = "\u001B[0m";
-    // still need reset although already mapped color to each letter char
-    //otherwise will the zB index or the "dot" boards below also be colored lmao
+    // need reset otherwise all the console will be colored
 
     // maps region letters A–Z to colors
     private String getRegionColor(char region) {
@@ -280,5 +255,3 @@ public class StarBattleSolver {
     }
 }
 
-//i have space in my input file
-//like instead of AAABBBCC i write it like A A B B C C and the file can be still printed out but input cant be implemented and solved
