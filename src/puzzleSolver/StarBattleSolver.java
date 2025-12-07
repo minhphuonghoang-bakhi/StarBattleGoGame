@@ -1,11 +1,10 @@
 package puzzleSolver;
 
-
 import java.util.*;
-import java.util.Scanner;
 import java.io.IOException;
 import board.StarBattleBoard;
-import validation.StarBattleValidation;
+import statistics.SolveStatistics;
+
 
 public class StarBattleSolver {
 
@@ -14,6 +13,8 @@ public class StarBattleSolver {
     private int starsPerRow;
     private char[][] grid;
     private char[][] regions;
+    private SolveStatistics stats;
+
 
     public StarBattleSolver(StarBattleBoard board) {      //Constructor
         this.board = board;
@@ -148,7 +149,10 @@ public class StarBattleSolver {
     }
 
     // solve puzzle
-    public boolean solve() {
+    public boolean solve(String puzzleName) {
+        this.stats = new SolveStatistics(puzzleName);
+        stats.recordStart();
+
         Map<Character, ArrayList<int[]>> regionCells = getRegionCells();
         int[] regionSizes = countRegion();
         //regionSizes = [4, 7, 4, 5, 4, 0, 0...,0]
@@ -163,8 +167,9 @@ public class StarBattleSolver {
         //r= 'A' -> regionSizes[A-A=0] = 4
         //r= 'B' -> regionSizes[B-A=1] = 7
 
-
-        return solveRegion(regionOrder, regionCells, 0);
+        boolean result = solveRegion(regionOrder, regionCells, 0);
+        stats.recordEnd(result);
+        return result;
     }
 
     // recursively solve regions by regions
@@ -215,6 +220,12 @@ public class StarBattleSolver {
             //cell = (0,1)
             int r = cell[0]; // 0
             int c = cell[1];  // 1
+
+            //track all moves
+            if (stats != null) { //avoid NullPointerException
+                stats.incrementTotalMoveAttempts();
+            }
+
             if (isValidMove(r, c)) {
                 //cannot call a private method of another class directly
                 //cannot call a method of another class without a reference to the object of this class
@@ -228,6 +239,14 @@ public class StarBattleSolver {
                     return true;
                 }
                 removeStar(r, c); //backtrack
+                // track backtrack
+                if (stats != null) {
+                    stats.incrementBacktrack();
+                }
+            } else {      //if not isValidMove, track invalid move
+                if (stats != null) {
+                    stats.incrementInvalidMoveAttempts();
+                }
             }
         }
 
@@ -284,17 +303,26 @@ public class StarBattleSolver {
             System.out.println();
         }
     }
-
+    // print stats method
+    public void printStatistics() {
+        if (stats != null) {
+            System.out.println(stats);  //Java AUTOMATICALLY calls stats.toString() and we have override this toString method
+        }
+    }
     public static void main (String[] args) throws IOException {
         StarBattleBoard board = StarBattleBoard.fromFile("puzzle/puzzle.txt");
         StarBattleSolver solver = new StarBattleSolver(board);
 
-        if (solver.solve() == true) {
+        if (solver.solve("puzzle.txt") == true) {
             solver.printRegions();
             System.out.println("Solution found:");
             solver.printBoard();
+            System.out.println();
+            solver.printStatistics();
         } else {
             System.out.println("No solution available.");
+            System.out.println();
+            solver.printStatistics();
         }
     }
 }
