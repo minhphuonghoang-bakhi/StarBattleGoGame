@@ -5,9 +5,8 @@ import java.io.IOException;
 import board.StarBattleBoard;
 import statistics.SolveStatistics;
 
-
 public class StarBattleSolver {
-
+    //data fields
     private StarBattleBoard board;
     private int size;
     private int starsPerRow;
@@ -112,7 +111,6 @@ public class StarBattleSolver {
             for (int j = -1; j <= 1; j++) {
                 int r = row + i, c = col + j;
                 if (r >= 0 && r < size && c >= 0 && c < size && grid[r][c] == '*') {
-
                     return false;
                 }
             }
@@ -214,8 +212,6 @@ public class StarBattleSolver {
         // sort by current constraint
         availableCells.sort(Comparator.comparingInt(cell -> computeCellConstraint(cell[0], cell[1])));
 
-
-
         for (int[] cell : availableCells) {   //A → cells = [(0,0), (0,1), (1,0), (1,1)]
             //cell = (0,1)
             int r = cell[0]; // 0
@@ -251,14 +247,6 @@ public class StarBattleSolver {
         }
 
         return false; //no stars placed in this region
-    }
-
-    //print board
-    public void printBoard() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) System.out.print(grid[i][j] + " ");
-            System.out.println();
-        }
     }
 
     //add color for each region
@@ -303,6 +291,26 @@ public class StarBattleSolver {
             System.out.println();
         }
     }
+
+    //print board
+    public void printBoard() {
+        for (int i = 0; i < size; i++) {
+            if (i == 0) System.out.print("   " + i);    //print row index
+            else System.out.print(" " + i);
+        }
+        System.out.println();
+        for (int i = 0; i < size; i++) {  //print col index and each colored dots je nach region each line
+            System.out.print(" " + i + " ");
+            for (int j = 0; j < size; j++) {
+                char region = regions[i][j];
+                char cell = grid[i][j];
+                String color = getRegionColor(region);
+                System.out.print(color + cell + ansiReset + " ");
+            }
+            System.out.println();
+        }
+    }
+
     // print stats method
     public void printStatistics() {
         if (stats != null) {
