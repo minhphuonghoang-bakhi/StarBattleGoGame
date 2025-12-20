@@ -4,10 +4,6 @@ import java.util.Scanner;
 import java.io.IOException;
 import board.StarBattleBoard;
 
-// firstly i have just copied pasted the deliverable 1 and code furtherly
-// but i saw its kind of a mess and hard to track each part
-// so i declare deliverables of the puzzle as different classes and build a "bridge" to link them together
-
 public class StarBattleGame {
     //rule of thumbs:
     //variables in data field: private
