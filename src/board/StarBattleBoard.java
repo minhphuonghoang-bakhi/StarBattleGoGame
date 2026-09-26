@@ -41,7 +41,7 @@ public class StarBattleBoard {
     // IOException If there is an error in reading the file
 
     public static StarBattleBoard fromFile(String filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader("puzzle/puzzle.txt"));
+        BufferedReader br = new BufferedReader(new FileReader(filename));
 
         String[] firstLine = br.readLine().trim().split("\\s+");
         int size = Integer.parseInt(firstLine[0]);

@@ -318,7 +318,7 @@ public class StarBattleSolver {
         }
     }
     public static void main (String[] args) throws IOException {
-        StarBattleBoard board = StarBattleBoard.fromFile("puzzle/puzzle.txt");
+        StarBattleBoard board = StarBattleBoard.fromFile("/home/chip/IdeaProjects/StarBattleGo.Official/src/puzzle/puzzle.txt");
         StarBattleSolver solver = new StarBattleSolver(board);
 
         if (solver.solve("puzzle.txt") == true) {
